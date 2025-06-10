@@ -5,8 +5,16 @@ This template should help get you started developing with Tauri, React and Types
 ## Network Scanning
 
 This app exposes a command `scan_network` that lists devices found in the local
-ARP table. It can be triggered from the React UI using the **Scan Network**
-button.
+ARP table. Internally it shells out to the system command `arp -a`. The command
+is triggered from the React UI using the **Scan Network** button.
+
+### Platform Notes
+
+Running `arp -a` may require different privileges depending on the operating
+system. On Linux and macOS, elevated permissions might be necessary to read the
+ARP table. Windows also relies on `arp -a`, which may require Administrator
+rights in certain environments. If you run into permission errors, try launching
+the application with the appropriate privileges for your OS.
 
 ## Development
 
