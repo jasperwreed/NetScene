@@ -19,10 +19,10 @@ function App() {
   }
 
   return (
-    <main className="container">
+    <main>
       <h1>Welcome to Tauri + React</h1>
 
-      <div className="row">
+      <div>
         <a href="https://vite.dev" target="_blank">
           <img src="/vite.svg" className="logo vite" alt="Vite logo" />
         </a>
@@ -36,7 +36,6 @@ function App() {
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
-        className="row"
         onSubmit={(e) => {
           e.preventDefault();
           greet();
@@ -51,14 +50,23 @@ function App() {
       </form>
       <p>{greetMsg}</p>
 
-      <div className="row">
-        <button onClick={scan}>Scan Network</button>
-      </div>
-      <ul>
-        {devices.map((d) => (
-          <li key={d.ip}>{`${d.ip} - ${d.mac}`}</li>
-        ))}
-      </ul>
+      <button id="scan-button" onClick={scan}>Scan Network</button>
+      <table>
+        <thead>
+          <tr>
+            <th>IP Address</th>
+            <th>MAC Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {devices.map((d) => (
+            <tr key={d.ip}>
+              <td>{d.ip}</td>
+              <td>{d.mac}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 }
