@@ -5,13 +5,6 @@ use reqwest;
 use std::process::Command;
 use log::{debug, info};
 
-/// Simple greeting command used by the template.
-#[tauri::command]
-pub fn greet(name: &str) -> String {
-    debug!("Greeting {name}");
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 /// Representation of a network device discovered on the local network.
 #[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct Device {
@@ -89,7 +82,7 @@ pub fn run() {
     info!("Starting NetScene application");
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, scan_network, get_pihole_stats])
+        .invoke_handler(tauri::generate_handler![scan_network, get_pihole_stats])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
