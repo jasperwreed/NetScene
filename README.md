@@ -16,6 +16,12 @@ ARP table. Windows also relies on `arp -a`, which may require Administrator
 rights in certain environments. If you run into permission errors, try launching
 the application with the appropriate privileges for your OS.
 
+## Pi-hole Statistics
+
+Another command `get_pihole_stats` fetches statistics from a Pi-hole instance
+using its FTL API. The React UI provides a **Get Pi-hole Stats** button that
+shows information such as domains blocked and queries today.
+
 ## Development
 
 To install dependencies and run the application:

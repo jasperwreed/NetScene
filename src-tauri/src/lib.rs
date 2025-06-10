@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use regex::Regex;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use reqwest;
 use std::process::Command;
 
 /// Simple greeting command used by the template.
@@ -16,6 +17,16 @@ pub struct Device {
     pub ip: String,
     /// MAC address reported by the ARP table.
     pub mac: String,
+}
+
+/// Basic statistics returned by the Pi-hole FTL API.
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PiholeStats {
+    pub domains_being_blocked: u64,
+    pub dns_queries_today: u64,
+    pub ads_blocked_today: u64,
+    pub ads_percentage_today: f64,
+    pub status: String,
 }
 
 /// Parse the output of the `arp -a` command into a list of [`Device`].
@@ -73,11 +84,20 @@ async fn scan_network() -> Result<Vec<Device>, String> {
     Ok(parse_arp_output(&stdout))
 }
 
+/// Fetch statistics from the Pi-hole instance at the given host.
+#[tauri::command]
+async fn get_pihole_stats(host: &str) -> Result<PiholeStats, String> {
+    let url = format!("http://{}/admin/api.php?summaryRaw", host);
+    let resp = reqwest::get(&url).await.map_err(|e| e.to_string())?;
+    let stats = resp.json::<PiholeStats>().await.map_err(|e| e.to_string())?;
+    Ok(stats)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, scan_network])
+        .invoke_handler(tauri::generate_handler![greet, scan_network, get_pihole_stats])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
