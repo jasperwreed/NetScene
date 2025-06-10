@@ -6,10 +6,16 @@ import "./App.css";
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
+  const [devices, setDevices] = useState<{ ip: string; mac: string }[]>([]);
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+    setGreetMsg(await invoke<string>("greet", { name }));
+  }
+
+  async function scan() {
+    const result = await invoke<{ ip: string; mac: string }[]>("scan_network");
+    setDevices(result);
   }
 
   return (
@@ -44,6 +50,15 @@ function App() {
         <button type="submit">Greet</button>
       </form>
       <p>{greetMsg}</p>
+
+      <div className="row">
+        <button onClick={scan}>Scan Network</button>
+      </div>
+      <ul>
+        {devices.map((d) => (
+          <li key={d.ip}>{`${d.ip} - ${d.mac}`}</li>
+        ))}
+      </ul>
     </main>
   );
 }
