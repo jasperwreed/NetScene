@@ -8,6 +8,12 @@ This app exposes a command `scan_network` that lists devices found in the local
 ARP table. It can be triggered from the React UI using the **Scan Network**
 button.
 
+## Pi-hole Statistics
+
+Another command `get_pihole_stats` fetches statistics from a Pi-hole instance
+using its FTL API. The React UI provides a **Get Pi-hole Stats** button that
+shows information such as domains blocked and queries today.
+
 ## Development
 
 To install dependencies and run the application:
